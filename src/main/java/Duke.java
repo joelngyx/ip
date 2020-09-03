@@ -2,6 +2,11 @@ import java.util.Scanner;
 
 public class Duke {
 
+    public static void main(String[] args) {
+        System.out.println("Hello from\n" + WELCOME_MESSAGE);
+        addingTasksToList();
+    }
+
     public static final String BYE_MESSAGE = ""
             + "____________________________________________________________\n"
             + "Bye. Hope to see you again soon!\n"
@@ -16,12 +21,7 @@ public class Duke {
             + "What can I do for you?\n"
             + "____________________________________________________________\n";
 
-    public static void main(String[] args) {
-        System.out.println("Hello from\n" + WELCOME_MESSAGE);
-        addToList();
-    }
-
-    public static void printMarkedDone (Task[] list, int checkedIntIndex){
+    public static void printTaskMarkedDone (Task[] list, int checkedIntIndex){
         System.out.println(""
                 + "____________________________________________________________\n"
                 + "Nice! I've marked this task as done:\n"
@@ -32,7 +32,7 @@ public class Duke {
         );
     }
 
-    public static void printAddingError(){
+    public static void printAddingTaskError(){
         System.out.println(""
                 + "____________________________________________________________\n"
                 + "Please enter a valid input"
@@ -55,13 +55,13 @@ public class Duke {
         );
     }
 
-    public static void printList(Task[] list){
+    public static void printTaskList(Task[] list){
         int count = 0;
         System.out.println("____________________________________________________________");
         while(list[count] != null){
             System.out.println(""
                     + (count + 1) + "." + list[count].getTaskIcon() + '['
-                    + list[count].getStatusIcon() + "]" + " "
+                    + list[count].getStatusIcon() + "]"
                     + list[count].description
             );
             count ++;
@@ -69,7 +69,8 @@ public class Duke {
         System.out.println("____________________________________________________________");
     }
 
-    public static void addToList(){
+    //Processes
+    public static void addingTasksToList(){
         Scanner in = new Scanner(System.in);
         Task[] list = new Task[100];
         int index = 0;
@@ -77,13 +78,13 @@ public class Duke {
 
         while((!input.equals("bye")) && (!input.equals("Bye")) && (index < 100)){
             if(input.equals("list") || input.equals("List")){
-                printList(list);
+                printTaskList(list);
             }
             else if(input.contains("done") || input.contains("Done")){
-                updateIfDone(input, index, list);
+                updateIfTaskDone(input, index, list);
             }
             else{
-                addTask(list, index, input);
+                addATask(list, index, input);
                 if(getTaskType(input) != "Error") {
                     index++;
                 }
@@ -93,7 +94,7 @@ public class Duke {
         System.out.println(BYE_MESSAGE);
     }
 
-    public static void addTask (Task[] list, int index, String input){
+    public static void addATask (Task[] list, int index, String input){
         String type = getTaskType(input);
         if(type != "Error") {
             switch (type) {
@@ -111,17 +112,17 @@ public class Duke {
             }
             printAddedTask(list[index], index);
         } else {
-            printAddingError();
+            printAddingTaskError();
         }
     }
 
-    public static void updateIfDone(String input, int index, Task[] list){
+    public static void updateIfTaskDone(String input, int index, Task[] list){
         String checkedStrIndex = input.replaceAll("[^0-9]", "");
         int checkedIntIndex = Integer.parseInt(checkedStrIndex);
         if(checkedIntIndex <= index + 1 && checkedIntIndex > 0){
             list[checkedIntIndex - 1].updateIsDone();
         }
-        printMarkedDone(list, checkedIntIndex);
+        printTaskMarkedDone(list, checkedIntIndex);
     }
 
     public static String getTaskType(String s){
