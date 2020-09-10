@@ -7,37 +7,34 @@ public class Duke {
         addingTasksToList();
     }
 
+    public static final String MARGINS = "____________________________________________________________\n";
+
     public static final String BYE_MESSAGE = ""
-            + "____________________________________________________________\n"
-            + "Bye. Hope to see you again soon!\n"
-            + "____________________________________________________________\n";
+            + MARGINS + "Bye. Hope to see you again soon!\n" + MARGINS;
+
     public static final String WELCOME_MESSAGE = ""
             + "|  _ \\ _   _| | _____ \n"
             + "| | | | | | | |/ / _ \\\n"
             + "| |_| | |_| |   <  __/\n"
             + "|____/ \\__,_|_|\\_\\___|\n"
-            + "____________________________________________________________\n"
+            + MARGINS
             + "Hello! I'm Duke\n"
             + "What can I do for you?\n"
-            + "____________________________________________________________\n";
+            + MARGINS;
 
     public static void printTaskMarkedDone (Task[] list, int checkedIntIndex){
         System.out.println(""
-                + "____________________________________________________________\n"
+                + MARGINS
                 + "Nice! I've marked this task as done:\n"
                 + "  " + list[checkedIntIndex - 1].getTaskIcon() + "["
                 + list[checkedIntIndex - 1].getStatusIcon() + "]"
-                + list[checkedIntIndex - 1].description
-                + "\n____________________________________________________________"
+                + list[checkedIntIndex - 1].description + "\n"
+                + MARGINS
         );
     }
 
     public static void printAddingTaskError(){
-        System.out.println(""
-                + "____________________________________________________________\n"
-                + "Please enter a valid input"
-                + "\n____________________________________________________________"
-        );
+        System.out.println(MARGINS + "Please enter a valid input\n" + MARGINS);
     }
 
     public static void printAddedTask(Task input, int index){
@@ -46,12 +43,11 @@ public class Duke {
             task = "task";
         }
         System.out.println(""
-                + "____________________________________________________________\n"
-                + "Got it. I've added this task: \n"
-                + "  " + input.getTaskIcon() + "["
+                + MARGINS
+                + "Got it. I've added this task: \n" + "  " + input.getTaskIcon() + "["
                 + input.getStatusIcon() + "]" + input.description
-                + "\nNow you have " + (index + 1) + " " + task + " in the list."
-                + "\n____________________________________________________________\n"
+                + "\nNow you have " + (index + 1) + " " + task + " in the list.\n"
+                + MARGINS
         );
     }
 
@@ -67,6 +63,20 @@ public class Duke {
             count ++;
         }
         System.out.println("____________________________________________________________");
+    }
+
+    public static void printError_EmptyInput(String s){
+        System.out.println(MARGINS + "Tasks of type" + s + "cannot be empty\n" + MARGINS);
+    }
+
+    public static void printError_LackSlash(String s){
+        System.out.println(MARGINS + "Please indicate the");
+        if (s.equals("deadline")) {
+            System.out.println("deadline");
+        } else {
+            System.out.println("duration");
+        }
+        System.out.println("of the task with a '/'\n" + MARGINS);
     }
 
     //Processes
@@ -98,21 +108,41 @@ public class Duke {
         String type = getTaskType(input);
         if(type != "Error") {
             switch (type) {
-                case ("Todo"):
-                    list[index] = new Todo(input.replace("todo", ""));
-                    break;
-                case ("Deadline"):
-                    list[index] = new Deadline(input.replace("deadline", "").
+            case ("Todo"):
+                list[index] = new Todo(input.replace("todo", ""));
+                break;
+            case ("Deadline"):
+                list[index] = new Deadline(input.replace("deadline", "").
+                        replace("/", "(") + ")");
+                break;
+            case ("Event"):
+                list[index] = new Event(input.replace("event", "").
                             replace("/", "(") + ")");
-                    break;
-                case ("Event"):
-                    list[index] = new Event(input.replace("event", "").
-                            replace("/", "(") + ")");
-                    break;
+                break;
             }
             printAddedTask(list[index], index);
         } else {
-            printAddingTaskError();
+            String errorType = checkErrorType(input);
+            switch(errorType){
+            case ("Todo_Empty_Input"):
+                printError_EmptyInput("todo");
+                break;
+            case ("Event_Empty_Input"):
+                printError_EmptyInput("event");
+                break;
+            case ("Deadline_Empty_Input"):
+                printError_EmptyInput("deadline");
+                break;
+            case ("Deadline_Lack_Slash"):
+                printError_LackSlash("deadline");
+                break;
+            case ("Event_Lack_Slash"):
+                printError_LackSlash("event");
+                break;
+            default:
+                printAddingTaskError();
+            }
+
         }
     }
 
@@ -141,13 +171,50 @@ public class Duke {
         }
     }
 
-    public static boolean checkTaskType(String s, String type){
-        if((s.contains("deadline")) || (s.contains("event"))){
-            if(!s.contains("/")){
-                return false;
+    public static boolean checkTaskType(String s, String type) {
+        String temp = s.replace(type, "");
+        temp = temp.replace("/", "");
+        if (s.contains("todo")) {
+            if(!temp.equals("")) {
+                return s.contains(type);
             }
         }
-        return s.contains(type);
+        if(s.contains("event") || s.contains("deadline")){
+            if(s.contains("/")) {
+                if(!temp.equals("")){
+                    return s.contains(type);
+                }
+            }
+        }
+        return false;
+    }
+
+    public static String checkErrorType(String s){
+        String temp = s.replace("todo", "");
+        temp = temp.replace("deadline", "");
+        temp = temp.replace("event", "");
+        temp = temp.replace("/", "");
+        temp = temp.replace(" ", "");
+        if(s.contains("todo")){
+            if(temp.equals("")){
+                return "Todo_Empty_Input";
+            }
+        }
+        if(s.contains("event")){
+            if(!s.contains("/")){
+                return "Event_Lacks_Slash";
+            } else if(temp.equals("")){
+                return "Event_Empty_Input";
+            }
+        }
+        if(s.contains("deadline")) {
+            if (!s.contains("/")) {
+                return "Deadline_Lacks_Slash";
+            } else if (temp.equals("")) {
+                return "Deadline_Empty_Input";
+            }
+        }
+        return "Error";
     }
 }
 
