@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class Messages {
     public static final String MARGINS = "____________________________________________________________\n";
 
@@ -14,13 +16,13 @@ public class Messages {
             + "What can I do for you?\n"
             + MARGINS;
 
-    public static void printTaskMarkedDone (Task[] list, int checkedIntIndex){
+    public static void printTaskMarkedDone (ArrayList<Task> list, int checkedIntIndex){
         System.out.println(""
                 + MARGINS
                 + "Nice! I've marked this task as done:\n"
-                + "  " + list[checkedIntIndex - 1].getTaskIcon() + "["
-                + list[checkedIntIndex - 1].getStatusIcon() + "]"
-                + list[checkedIntIndex - 1].description + "\n"
+                + "  " + list.get(checkedIntIndex - 1).getTaskIcon() + "["
+                + list.get(checkedIntIndex - 1).getStatusIcon() + "]"
+                + list.get(checkedIntIndex - 1).description + "\n"
                 + MARGINS
         );
     }
@@ -43,14 +45,14 @@ public class Messages {
         );
     }
 
-    public static void printTaskList(Task[] list){
+    public static void printTaskList(ArrayList<Task> list){
         int count = 0;
         System.out.println("____________________________________________________________");
-        while(list[count] != null){
+        while(count < list.size()){
             System.out.println(""
-                    + (count + 1) + "." + list[count].getTaskIcon() + '['
-                    + list[count].getStatusIcon() + "]"
-                    + list[count].description
+                    + (count + 1) + "." + list.get(count).getTaskIcon() + '['
+                    + list.get(count).getStatusIcon() + "]"
+                    + list.get(count).description
             );
             count ++;
         }
@@ -58,7 +60,7 @@ public class Messages {
     }
 
     public static void printError_EmptyInput(String s){
-        System.out.println(MARGINS + "Tasks of type" + s + "cannot be empty\n" + MARGINS);
+        System.out.println(MARGINS + "Tasks of type " + s + " cannot be empty\n" + MARGINS);
     }
 
     public static void printError_LackSlash(String s){

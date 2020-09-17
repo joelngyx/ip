@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import java.util.ArrayList;
 
 public class Duke {
 
@@ -10,7 +11,7 @@ public class Duke {
     //Processes
     public static void addingTasksToList(){
         Scanner in = new Scanner(System.in);
-        Task[] list = new Task[100];
+        ArrayList<Task> list = new ArrayList<>();
         int index = 0;
         String input = in.nextLine();
 
@@ -19,7 +20,10 @@ public class Duke {
                 Messages.printTaskList(list);
             }
             else if(input.contains("done") || input.contains("Done")){
-                updateIfTaskDone(input, index, list);
+                updateIfTaskIsDone(input, index, list);
+            }
+            else if(input.contains("delete") || input.contains("Delete")){
+                removeTask(list,input);
             }
             else{
                 addATask(list, index, input);
@@ -32,23 +36,23 @@ public class Duke {
         System.out.println(Messages.BYE_MESSAGE);
     }
 
-    public static void addATask (Task[] list, int index, String input){
+    public static void addATask (ArrayList<Task> list, int index, String input){
         String type = getTaskType(input);
         if(type != "Error") {
             switch (type) {
             case ("Todo"):
-                list[index] = new Todo(input.replace("todo", ""));
+                list.add(new Todo(input.replace("todo", "")));
                 break;
             case ("Deadline"):
-                list[index] = new Deadline(input.replace("deadline", "").
-                        replace("/", "(") + ")");
+                list.add(new Deadline(input.replace("deadline", "").
+                        replace("/", "(") + ")"));
                 break;
             case ("Event"):
-                list[index] = new Event(input.replace("event", "").
-                            replace("/", "(") + ")");
+                list.add(new Event(input.replace("event", "").
+                            replace("/", "(") + ")"));
                 break;
             }
-            Messages.printAddedTask(list[index], index);
+            Messages.printAddedTask(list.get(index), index);
         } else {
             String errorType = DukeExceptions.checkErrorType(input);
             switch(errorType){
@@ -73,11 +77,11 @@ public class Duke {
         }
     }
 
-    public static void updateIfTaskDone(String input, int index, Task[] list){
+    public static void updateIfTaskIsDone(String input, int index, ArrayList<Task> list){
         String checkedStrIndex = input.replaceAll("[^0-9]", "");
         int checkedIntIndex = Integer.parseInt(checkedStrIndex);
         if(checkedIntIndex <= index + 1 && checkedIntIndex > 0){
-            list[checkedIntIndex - 1].updateIsDone();
+            list.get(checkedIntIndex - 1).updateIsDone();
         }
         Messages.printTaskMarkedDone(list, checkedIntIndex);
     }
@@ -116,32 +120,8 @@ public class Duke {
         return false;
     }
 
-    public static String checkErrorType(String s){
-        String temp = s.replace("todo", "");
-        temp = temp.replace("deadline", "");
-        temp = temp.replace("event", "");
-        temp = temp.replace("/", "");
-        temp = temp.replace(" ", "");
-        if(s.contains("todo")){
-            if(temp.equals("")){
-                return "Todo_Empty_Input";
-            }
-        }
-        if(s.contains("event")){
-            if(!s.contains("/")){
-                return "Event_Lacks_Slash";
-            } else if(temp.equals("")){
-                return "Event_Empty_Input";
-            }
-        }
-        if(s.contains("deadline")) {
-            if (!s.contains("/")) {
-                return "Deadline_Lacks_Slash";
-            } else if (temp.equals("")) {
-                return "Deadline_Empty_Input";
-            }
-        }
-        return "Error";
+    public static void removeTask(ArrayList<Task> list, String input){
+
     }
 }
 
