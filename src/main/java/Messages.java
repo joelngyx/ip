@@ -16,6 +16,18 @@ public class Messages {
             + "What can I do for you?\n"
             + MARGINS;
 
+    public static void printRemovedTask (ArrayList<Task> list, int checkedIntIndex){
+        System.out.println(""
+                + MARGINS
+                + "Noted. I've removed this task:\n"
+                + "  " + list.get(checkedIntIndex - 1).getTaskIcon() + "["
+                + list.get(checkedIntIndex - 1).getStatusIcon() + "]"
+                + list.get(checkedIntIndex - 1).description + "\n"
+                + "Now you have " + (list.size() - 1) + " tasks in the list.\n"
+                + MARGINS
+        );
+    }
+
     public static void printTaskMarkedDone (ArrayList<Task> list, int checkedIntIndex){
         System.out.println(""
                 + MARGINS
@@ -72,5 +84,4 @@ public class Messages {
         }
         System.out.println("of the task with a '/'\n" + MARGINS);
     }
-
 }

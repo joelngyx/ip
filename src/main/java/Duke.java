@@ -23,7 +23,8 @@ public class Duke {
                 updateIfTaskIsDone(input, index, list);
             }
             else if(input.contains("delete") || input.contains("Delete")){
-                removeTask(list,input);
+                removeTask(list, input, index);
+                index--;
             }
             else{
                 addATask(list, index, input);
@@ -120,8 +121,13 @@ public class Duke {
         return false;
     }
 
-    public static void removeTask(ArrayList<Task> list, String input){
-
+    public static void removeTask(ArrayList<Task> list, String input, int index){
+        String checkedStrIndex = input.replaceAll("[^0-9]", "");
+        int checkedIntIndex = Integer.parseInt(checkedStrIndex);
+        if(checkedIntIndex <= index + 1 && checkedIntIndex > 0){
+            Messages.printRemovedTask(list, checkedIntIndex);
+            list.remove(checkedIntIndex - 1);
+        }
     }
 }
 
