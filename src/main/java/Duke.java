@@ -1,14 +1,19 @@
+import java.io.FileNotFoundException;
+import java.io.File;
+import java.io.IOException;
+import java.io.FileWriter;
 import java.util.Scanner;
 
 public class Duke {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+        File duke = new File("duke.txt");
         System.out.println("Hello from\n" + Messages.WELCOME_MESSAGE);
-        addingTasksToList();
+        addingTasksToList(duke);
     }
 
     //Processes
-    public static void addingTasksToList(){
+    public static void addingTasksToList(File duke) throws IOException {
         Scanner in = new Scanner(System.in);
         Task[] list = new Task[100];
         int index = 0;
@@ -21,9 +26,13 @@ public class Duke {
             else if(input.contains("done") || input.contains("Done")){
                 updateIfTaskDone(input, index, list);
             }
+            else if(input.contains("load")){
+                load(duke);
+            }
             else{
                 addATask(list, index, input);
                 if(getTaskType(input) != "Error") {
+                    writeToFile("duke.txt", input);
                     index++;
                 }
             }
@@ -116,32 +125,17 @@ public class Duke {
         return false;
     }
 
-    public static String checkErrorType(String s){
-        String temp = s.replace("todo", "");
-        temp = temp.replace("deadline", "");
-        temp = temp.replace("event", "");
-        temp = temp.replace("/", "");
-        temp = temp.replace(" ", "");
-        if(s.contains("todo")){
-            if(temp.equals("")){
-                return "Todo_Empty_Input";
-            }
+    public static void writeToFile(String filePath, String s) throws IOException {
+        FileWriter fw = new FileWriter(filePath, true);
+        fw.write(s + "\n");
+        fw.close();
+    }
+
+    public static void load(File duke) throws FileNotFoundException {
+        Scanner s = new Scanner(duke);
+        while(s.hasNext()){
+            System.out.println(s.nextLine());
         }
-        if(s.contains("event")){
-            if(!s.contains("/")){
-                return "Event_Lacks_Slash";
-            } else if(temp.equals("")){
-                return "Event_Empty_Input";
-            }
-        }
-        if(s.contains("deadline")) {
-            if (!s.contains("/")) {
-                return "Deadline_Lacks_Slash";
-            } else if (temp.equals("")) {
-                return "Deadline_Empty_Input";
-            }
-        }
-        return "Error";
     }
 }
 
