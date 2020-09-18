@@ -8,7 +8,8 @@ import java.io.FileWriter;
 public class Duke {
 
     public static void main(String[] args) throws IOException {
-        File duke = new File("data/duke.txt");
+        File duke = new File("duke.txt");
+        duke.createNewFile();
         System.out.println("full path: " + duke.getAbsolutePath());
         System.out.println("file exists?: " + duke.exists());
         System.out.println("is Directory?: " + duke.isDirectory());
@@ -32,8 +33,7 @@ public class Duke {
             }
             else if(input.contains("delete") || input.contains("Delete")){
                 removeTask(list, input, index);
-                editFile("duke.txt", list);
-                index--;
+                index --;
             }
             else{
                 addATask(list, index, input);
