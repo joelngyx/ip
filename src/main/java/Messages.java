@@ -41,6 +41,14 @@ public class Messages {
                 + "\nNow you have " + (index + 1) + " " + task + " in the list.\n"
                 + MARGINS
         );
+
+    }
+
+    public static String printToFile(Task input){
+        return ( input.getTaskIcon() + "["
+                + input.getStatusIcon() + "]" + input.description
+        );
+
     }
 
     public static void printTaskList(Task[] list){
