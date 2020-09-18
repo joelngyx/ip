@@ -1,15 +1,23 @@
+import java.io.FileNotFoundException;
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.io.File;
+import java.io.IOException;
+import java.io.FileWriter;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
 
 public class Duke {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+        File duke = new File("duke.txt");
         System.out.println("Hello from\n" + Messages.WELCOME_MESSAGE);
-        addingTasksToList();
+        addingTasksToList(duke);
     }
 
     //Processes
-    public static void addingTasksToList(){
+    public static void addingTasksToList(File duke) throws IOException {
         Scanner in = new Scanner(System.in);
         ArrayList<Task> list = new ArrayList<>();
         int index = 0;
@@ -22,14 +30,19 @@ public class Duke {
             else if(input.contains("done") || input.contains("Done")){
                 updateIfTaskIsDone(input, index, list);
             }
+            else if(input.contains("load")){
+                load(duke);
+            }
             else if(input.contains("delete") || input.contains("Delete")){
                 removeTask(list, input, index);
+                deleteTextInFile(duke, "todo fat");
                 index--;
             }
             else{
                 addATask(list, index, input);
                 if(getTaskType(input) != "Error") {
                     index++;
+                    writeToFile("duke.txt", input);
                 }
             }
             input = in.nextLine();
@@ -129,5 +142,35 @@ public class Duke {
             list.remove(checkedIntIndex - 1);
         }
     }
-}
 
+    public static void writeToFile(String filePath, String s) throws IOException {
+        FileWriter fw = new FileWriter(filePath, true);
+        fw.write(s + "\n");
+        fw.close();
+    }
+
+    public static void deleteTextInFile(File duke, String s) throws IOException {
+        File temp = new File("temp.txt");
+        //Search for text to be deleted
+        BufferedReader reader = new BufferedReader(new FileReader(duke));
+        BufferedWriter writer = new BufferedWriter(new FileWriter(temp));
+
+        String currentLine;
+        while(((currentLine = reader.readLine()) != null)){
+            String trimmedLine = currentLine.trim();
+            if(trimmedLine.contains(s)){
+                continue;
+            }
+            writer.close();
+            reader.close();
+            boolean successful = temp.renameTo(duke);
+        }
+    }
+
+    public static void load(File duke) throws FileNotFoundException {
+        Scanner s = new Scanner(duke);
+        while(s.hasNext()){
+            System.out.println(s.nextLine());
+        }
+    }
+}
