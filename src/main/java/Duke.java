@@ -1,11 +1,15 @@
-import java.io.*;
-import java.nio.Buffer;
+import java.io.FileNotFoundException;
 import java.util.Scanner;
+import java.util.ArrayList;
+import java.io.File;
+import java.io.IOException;
+import java.io.FileWriter;
 
 public class Duke {
 
     public static void main(String[] args) throws IOException {
-        File duke = new File("data/duke.txt");
+        File duke = new File("duke.txt");
+        duke.createNewFile();
         System.out.println("full path: " + duke.getAbsolutePath());
         System.out.println("file exists?: " + duke.exists());
         System.out.println("is Directory?: " + duke.isDirectory());
@@ -16,7 +20,7 @@ public class Duke {
     //Processes
     public static void addingTasksToList(File duke) throws IOException {
         Scanner in = new Scanner(System.in);
-        Task[] list = new Task[100];
+        ArrayList<Task> list = new ArrayList<>();
         int index = load("duke.txt", list);
         String input = in.nextLine();
 
@@ -25,14 +29,15 @@ public class Duke {
                 Messages.printTaskList(list);
             }
             else if(input.contains("done") || input.contains("Done")){
-                updateIfTaskDone(input, index, list);
+                updateIfTaskIsDone(input, index, list);
             }
-            else if(input.contains("load")){
-                printFile("duke.txt", list);
+            else if(input.contains("delete") || input.contains("Delete")){
+                removeTask(list, input, index);
+                index --;
             }
             else{
                 addATask(list, index, input);
-                if(getTaskType(input) != "Error") {
+                if(!getTaskType(input).equals("Error")) {
                     index++;
                 }
             }
@@ -41,24 +46,24 @@ public class Duke {
         System.out.println(Messages.BYE_MESSAGE);
     }
 
-    public static void addATask (Task[] list, int index, String input) throws IOException {
+    public static void addATask (ArrayList<Task> list, int index, String input) throws IOException {
         String type = getTaskType(input);
         if(type != "Error") {
             switch (type) {
             case ("Todo"):
-                list[index] = new Todo(input.replace("todo", ""));
+                list.add(new Todo(input.replace("todo", "")));
                 break;
             case ("Deadline"):
-                list[index] = new Deadline(input.replace("deadline", "").
-                        replace("/", "(") + ")");
+                list.add(new Deadline(input.replace("deadline", "").
+                        replace("/", "(") + ")"));
                 break;
             case ("Event"):
-                list[index] = new Event(input.replace("event", "").
-                            replace("/", "(") + ")");
+                list.add(new Event(input.replace("event", "").
+                            replace("/", "(") + ")"));
                 break;
             }
-            writeToFile("duke.txt", list[index], true);
-            Messages.printAddedTask(list[index], index);
+            writeToFile("duke.txt", list.get(index), true);
+            Messages.printAddedTask(list.get(index), index);
         } else {
             String errorType = DukeExceptions.checkErrorType(input);
             switch(errorType){
@@ -83,11 +88,12 @@ public class Duke {
         }
     }
 
-    public static void updateIfTaskDone(String input, int index, Task[] list) throws IOException {
+
+    public static void updateIfTaskIsDone(String input, int index, ArrayList<Task> list) throws IOException {
         String checkedStrIndex = input.replaceAll("[^0-9]", "");
         int checkedIntIndex = Integer.parseInt(checkedStrIndex);
         if(checkedIntIndex <= index + 1 && checkedIntIndex > 0){
-            list[checkedIntIndex - 1].updateIsDone();
+            list.get(checkedIntIndex - 1).updateIsDone();
         }
         Messages.printTaskMarkedDone(list, checkedIntIndex);
         editFile("duke.txt", list);
@@ -127,6 +133,15 @@ public class Duke {
         return false;
     }
 
+    public static void removeTask(ArrayList<Task> list, String input, int index){
+        String checkedStrIndex = input.replaceAll("[^0-9]", "");
+        int checkedIntIndex = Integer.parseInt(checkedStrIndex);
+        if(checkedIntIndex <= index + 1 && checkedIntIndex > 0){
+            Messages.printRemovedTask(list, checkedIntIndex);
+            list.remove(checkedIntIndex - 1);
+        }
+    }
+
     //FILE I/O
     public static void writeToFile(String filePath, Task input, boolean mode) throws IOException {
         FileWriter fw = new FileWriter(filePath, mode);
@@ -134,62 +149,51 @@ public class Duke {
         fw.close();
     }
 
-    public static void printFile(String filePath, Task[] list) throws FileNotFoundException {
-        File f = new File(filePath);
-        Scanner s = new Scanner(f);
-        s.useDelimiter("[,],\n");
-        int count = 0;
-        while(s.hasNext()){
-            System.out.println(s.nextLine());
-        }
-    }
-
-    public static void editFile(String filePath, Task[] list) throws IOException {
+    public static void editFile(String filePath, ArrayList<Task> list) throws IOException {
         File duke = new File(filePath);
         int i = 0;
-        if(list[i] != null){
-            writeToFile("duke.txt", list[i], false);
+        if(list.get(i) != null){
+            writeToFile("duke.txt", list.get(i), false);
             i++;
         }
-        while(list[i] != null){
-            writeToFile("duke.txt", list[i], true);
+        while(i < list.size()){
+            writeToFile("duke.txt", list.get(i), true);
             i++;
         }
     }
 
-    public static int load (String filePath, Task[] list) throws FileNotFoundException {
+    public static int load (String filePath, ArrayList<Task> list) throws FileNotFoundException {
         //This function populates the list with saved data on duke.txt
         Scanner sc = new Scanner(new File(filePath));
         int i = 0;
-        while(sc.hasNextLine()){
+        while (sc.hasNextLine()) {
             String task = sc.nextLine();
             char type = task.charAt(1);
             //System.out.println(type);
             char status = task.charAt(4);
             //System.out.println(status);
             String description = task.substring(6);
-            switch(type){
-            case('T'):
-                list[i] = new Todo(description);
-                break;
-            case('E'):
-                list[i] = new Event(description);
-                break;
-            case('D'):
-                list[i] = new Deadline(description);
-                break;
+            switch (type) {
+                case ('T'):
+                    list.add(new Todo(description));
+                    break;
+                case ('E'):
+                    list.add(new Event(description));
+                    break;
+                case ('D'):
+                    list.add(new Deadline(description));
+                    break;
             }
-            switch(status){
-            case('\u2713'):
-                list[i].isDone = true;
-                break;
-            case('\u2718'):
-                list[i].isDone = false;
-                break;
+            switch (status) {
+                case ('\u2713'):
+                    list.get(i).isDone = true;
+                    break;
+                case ('\u2718'):
+                    list.get(i).isDone = false;
+                    break;
             }
-            i ++;
+            i++;
         }
         return i;
     }
 }
-
