@@ -1,4 +1,0 @@
-[T][✘] fuck
-[T][✓] 1
-[E][✘] 202(4pm)
-[E][✓] trivago(hotel)
