@@ -34,6 +34,7 @@ public class Duke {
             else if(input.contains("delete") || input.contains("Delete")){
                 removeTask(list, input, index);
                 index --;
+                overWriteFile("duke.txt", list);
             }
             else{
                 addATask(list, index, input);
@@ -43,6 +44,7 @@ public class Duke {
             }
             input = in.nextLine();
         }
+        //overWriteFile("duke.txt", list);
         System.out.println(Messages.BYE_MESSAGE);
     }
 
@@ -62,7 +64,7 @@ public class Duke {
                             replace("/", "(") + ")"));
                 break;
             }
-            writeToFile("duke.txt", list.get(index), true);
+            appendToFile("duke.txt", list.get(index), true);
             Messages.printAddedTask(list.get(index), index);
         } else {
             String errorType = DukeExceptions.checkErrorType(input);
@@ -96,7 +98,7 @@ public class Duke {
             list.get(checkedIntIndex - 1).updateIsDone();
         }
         Messages.printTaskMarkedDone(list, checkedIntIndex);
-        editFile("duke.txt", list);
+        overWriteFile("duke.txt", list);
     }
 
     public static String getTaskType(String s){
@@ -133,7 +135,7 @@ public class Duke {
         return false;
     }
 
-    public static void removeTask(ArrayList<Task> list, String input, int index){
+    public static void removeTask(ArrayList<Task> list, String input, int index) throws IOException {
         String checkedStrIndex = input.replaceAll("[^0-9]", "");
         int checkedIntIndex = Integer.parseInt(checkedStrIndex);
         if(checkedIntIndex <= index + 1 && checkedIntIndex > 0){
@@ -143,23 +145,20 @@ public class Duke {
     }
 
     //FILE I/O
-    public static void writeToFile(String filePath, Task input, boolean mode) throws IOException {
+    public static void appendToFile(String filePath, Task input, boolean mode) throws IOException {
         FileWriter fw = new FileWriter(filePath, mode);
-        fw.write(Messages.printToFile(input) + "\n");
+        fw.write(Messages.printToFile(input));
         fw.close();
     }
 
-    public static void editFile(String filePath, ArrayList<Task> list) throws IOException {
-        File duke = new File(filePath);
+    public static void overWriteFile(String filePath, ArrayList <Task> list) throws IOException {
         int i = 0;
-        if(list.get(i) != null){
-            writeToFile("duke.txt", list.get(i), false);
-            i++;
+        FileWriter fw = new FileWriter(filePath, false);
+        while (i < list.size()){
+           fw.write(Messages.printToFile(list.get(i)));
+           i++;
         }
-        while(i < list.size()){
-            writeToFile("duke.txt", list.get(i), true);
-            i++;
-        }
+        fw.close();
     }
 
     public static int load (String filePath, ArrayList<Task> list) throws FileNotFoundException {

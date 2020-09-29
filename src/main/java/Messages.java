@@ -60,7 +60,7 @@ public class Messages {
 
     public static String printToFile(Task input){
         return ( input.getTaskIcon() + "["
-                + input.getStatusIcon() + "]" + input.description
+                + input.getStatusIcon() + "]" + input.description + "\n"
         );
 
     }
