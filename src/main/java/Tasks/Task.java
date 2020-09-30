@@ -1,7 +1,8 @@
+package Tasks;
+
 public class Task {
     protected String description;
     protected boolean isDone;
-    public static int numberOfTasks = 0;
 
     public Task(String description) {
         this.description = description;
@@ -16,7 +17,15 @@ public class Task {
         this.isDone = true;
     }
 
+    public void markNotDone() {
+        this.isDone = false;
+    }
+
     public String getTaskIcon(){
         return "Error";
+    }
+
+    public String getDescription() {
+        return this.description;
     }
 }
