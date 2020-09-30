@@ -2,7 +2,7 @@ package Commands;
 
 import Data.Storage;
 import Data.TaskList;
-import Parser.Parser;
+import Tasks.Task;
 import Tasks.Deadline;
 import Tasks.Event;
 import Tasks.Todo;
@@ -50,5 +50,23 @@ public class Commands {
             list.remove(checkedIntIndex - 1);
         }
         Storage.overWriteFile(list);
+    }
+
+    public static void findTask(String s, TaskList list) {
+        s = s.replace("find", "");
+        int count = 1;
+        System.out.print(Messages.MARGINS);
+        for(int i = 0; i < list.size(); i ++) {
+            if(list.get(i).getDescription().contains(s)) {
+                System.out.println(
+                    count + "." + Messages.printTask(list.get(i))
+                );
+                count ++;
+            }
+        }
+        if(count == 1) {
+            System.out.print("Sorry, no tasks found!\n");
+        }
+        System.out.print(Messages.MARGINS);
     }
 }

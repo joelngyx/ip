@@ -6,6 +6,8 @@ import Tasks.Task;
 public class Messages {
     public static final String MARGINS = "____________________________________________________________\n";
 
+    public static final String MARGINS_NO_NEWLINE = "____________________________________________________________";
+
     public static final String BYE_MESSAGE = ""
             + MARGINS + "Bye. Hope to see you again soon!\n" + MARGINS;
 
@@ -58,9 +60,14 @@ public class Messages {
 
     }
 
-    public static String printToFile(Task input){
+    public static String printTo(Task input){
         return ( input.getTaskIcon() + "["
                 + input.getStatusIcon() + "]" + input.getDescription() + "\n");
+    }
+
+    public static String printTask(Task input){
+        return ( input.getTaskIcon() + "["
+                + input.getStatusIcon() + "]" + input.getDescription());
     }
 
     public static void printErrorEmptyInput(String s){

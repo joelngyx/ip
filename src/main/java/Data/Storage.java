@@ -26,7 +26,7 @@ public class Storage {
 
     public static void appendToFile(Task input) throws IOException{
         FileWriter fw = new FileWriter("duke.txt" ,true);
-        fw.write(Messages.printToFile(input));
+        fw.write(Messages.printTo(input));
         fw.close();
     }
 
@@ -34,7 +34,7 @@ public class Storage {
         int i = 0;
         FileWriter fw = new FileWriter("duke.txt", false);
         while (i < list.size()){
-            fw.write(Messages.printToFile(list.get(i)));
+            fw.write(Messages.printTo(list.get(i)));
             i++;
         }
         fw.close();

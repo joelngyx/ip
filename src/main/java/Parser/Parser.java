@@ -53,15 +53,19 @@ public class Parser {
                 System.out.println(getDescription(getTaskType(input), input));
                 Commands.addTask(getDescription(getTaskType(temp), input), getTaskType(input), list);
             }
-        } else {
+        } else if (temp.contains("find")) {
+            Commands.findTask(input, list);
+        }
+        else {
             Messages.printGeneralError();
         }
     }
 
     public static String getDescription(String type, String input) {
         String temp = input.toLowerCase();
-        int lastIndex = temp.lastIndexOf(type);
-        return input.substring(lastIndex);
+//        int lastIndex = temp.lastIndexOf(type);
+//        return input.substring(lastIndex);
+        return temp.replace(type, "");
     }
 
     public static String getTaskType(String s){
