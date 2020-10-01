@@ -2,32 +2,34 @@ package Commands;
 
 import Data.Storage;
 import Data.TaskList;
-import Parser.Parser;
 import Tasks.Deadline;
 import Tasks.Event;
 import Tasks.Todo;
 import Ui.Messages;
 
-import java.io.File;
+
 import java.io.IOException;
-import java.util.Scanner;
+import java.time.LocalDate;
+
 
 public class Commands {
 
-    public static void addTask(String description, String type, TaskList list) throws IOException {
-        switch (type){
-            case ("todo"):
-                list.addToList(new Todo(description));
-                list.addToFile(new Todo(description));
-                break;
-            case ("event") :
-                list.addToList(new Event(description));
-                list.addToFile(new Event(description));
-                break;
-            case ("deadline") :
-                list.addToList(new Deadline(description));
-                list.addToFile(new Deadline(description));
-                break;
+    public static void addTodoTask(String description, TaskList list) throws IOException {
+        list.addToList(new Todo(description));
+        list.addToFile(new Todo(description));
+        Messages.printAddedTask(list.get(list.size() - 1), list.size());
+    }
+
+    public static void addEventOrDeadlineTask (String description, String type, TaskList list, LocalDate date) throws IOException {
+        switch(type) {
+        case ("event"):
+            list.addToList(new Event(description, date));
+            list.addToFile(new Event(description, date));
+            break;
+        case ("deadline"):
+            list.addToList(new Deadline(description, date));
+            list.addToFile(new Deadline(description, date));
+            break;
         }
         Messages.printAddedTask(list.get(list.size() - 1), list.size());
     }
