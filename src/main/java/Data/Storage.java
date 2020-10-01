@@ -56,10 +56,12 @@ public class Storage {
                     list.addToList(new Todo(description));
                     break;
                 case ('E'):
-                    list.addToList(new Event(description));
+                    list.addToList(new Event(Parser.Parser.getDescription("event", description),
+                            Parser.Parser.getDate(description)));
                     break;
                 case ('D'):
-                    list.addToList(new Deadline(description));
+                    list.addToList(new Deadline(Parser.Parser.getDescription("deadline", description),
+                            Parser.Parser.getDate(description)));
                     break;
             }
             switch (status) {

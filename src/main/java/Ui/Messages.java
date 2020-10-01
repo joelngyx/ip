@@ -74,10 +74,20 @@ public class Messages {
         } else {
             System.out.println("duration");
         }
-        System.out.println("of the task with a '/'\n" + MARGINS);
+        System.out.println("of the task with 3 '/' characters\n"
+                + "e.g. deadline return book /by 2/12/2019\n" + MARGINS);
     }
 
     public static void printGeneralError() {
         System.out.println(MARGINS + "Please enter a valid input\n" + MARGINS);
+    }
+
+    public static void printDateInputError() {
+        System.out.println(MARGINS + "Please enter dates in the form 'dd/MM/yyyy'\n"
+                +  "e.g. deadline return book /by 2/12/2019\n" + MARGINS);
+    }
+
+    public static void printDateComponentError (String s) {
+        System.out.println("Enter a valid " + s + "\n");
     }
 }
