@@ -1,12 +1,22 @@
 package Tasks;
 
+import java.time.LocalDate;
+
 public class Task {
+
+    protected LocalDate date;
     protected String description;
     protected boolean isDone;
 
     public Task(String description) {
         this.description = description;
         this.isDone = false;
+    }
+
+    public Task(String description, LocalDate date) {
+        this.description = description;
+        this.isDone = false;
+        this.date = date;
     }
 
     public String getStatusIcon() {
@@ -27,5 +37,9 @@ public class Task {
 
     public String getDescription() {
         return this.description;
+    }
+
+    public void addDate(LocalDate x) {
+        this.date = x;
     }
 }
