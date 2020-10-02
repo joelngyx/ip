@@ -61,14 +61,13 @@ public class Commands {
     public static void updateTaskStatus (String input, int sizeOfList, TaskList list) throws IOException {
         String providedIndexInStr = input.replaceAll("[^0-9]", "");
         int providedIndexInInt = Integer.parseInt(providedIndexInStr);
-        boolean isIndexValid = ((providedIndexInInt < sizeOfList) && (providedIndexInInt > 0));
+        boolean isIndexValid = ((providedIndexInInt < sizeOfList) || (providedIndexInInt > 0));
 
         if (isIndexValid) {
             list.get(providedIndexInInt - 1).markDone();
+            Storage.overWriteFile(list);
+            Messages.printTaskMarkedDone(list, providedIndexInInt);
         }
-
-        Storage.overWriteFile(list);
-        Messages.printTaskMarkedDone(list, providedIndexInInt);
     }
 
     /**
