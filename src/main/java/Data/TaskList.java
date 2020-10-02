@@ -3,8 +3,12 @@ package Data;
 import Tasks.Task;
 
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
+/**
+ * A modified ArrayList which stores the User's Tasks
+ */
 public class TaskList {
 
     // Used to instantiates an ArrayList of Tasks
@@ -21,7 +25,7 @@ public class TaskList {
         taskList = new ArrayList<>();
     }
 
-    public void addToList(Task task) throws IOException {
+    public void addToList(Task task) {
         taskList.add(task);
     }
 
@@ -43,9 +47,21 @@ public class TaskList {
         StringBuilder sb = new StringBuilder();
         sb.append("____________________________________________________________");
         while(count < taskList.size()){
-            sb.append("\n").append(count + 1).append(".").append(taskList.get(count).
-                    getTaskIcon()).append('[').append(taskList.get(count).getStatusIcon()).
-                    append("]").append(taskList.get(count).getDescription());
+            sb.append("\n").append(count + 1).append(".").
+                    append(taskList.get(count).getTaskIcon()).append('[').
+                    append(taskList.get(count).getStatusIcon()).
+                    append("]");
+            if(taskList.get(count).getDate() != null) {
+                sb.append(taskList.get(count).getDescription().replace(
+                        taskList.get(count).getDate().format(DateTimeFormatter
+                        .ofPattern("dd/MM/yyyy")), taskList.get(count).
+                        getDate().format(DateTimeFormatter.ofPattern("yyyy/dd/MM"))
+                    )
+                );
+            }
+            else {
+                sb.append(taskList.get(count).getDescription());
+            }
             count++;
         }
         sb.append("\n");

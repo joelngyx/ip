@@ -2,11 +2,12 @@
 import Data.Storage;
 import Data.TaskList;
 import Parser.Parser;
-import Ui.Messages;
 import Ui.TextUi;
-import java.util.Scanner;
-import java.io.File;
 import java.io.IOException;
+
+/**
+ * This class initialises the application
+ */
 
 public class Duke {
 
@@ -43,7 +44,8 @@ public class Duke {
         do{
             input = ui.getInput();
             Parser.parseCommand(input, list);
-        } while (!input.contains("bye"));
+        }
+        while (!input.contains("bye"));
         exit();
     }
 

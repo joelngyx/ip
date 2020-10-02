@@ -1,5 +1,10 @@
 package Tasks;
 
+/**
+ * Constructs a generic Task object, which has the attributes
+ * date (applies only for Event and Deadline type Tasks), Task
+ * description, and the Task status
+ */
 import java.time.LocalDate;
 
 public class Task {
@@ -20,10 +25,10 @@ public class Task {
     }
 
     public String getStatusIcon() {
-        return (isDone ? "\u2713" : "\u2718"); //return tick or X symbols
+        return (isDone ? "\u2713" : "\u2718");
     }
 
-    public void updateIsDone(){
+    public void markDone(){
         this.isDone = true;
     }
 
@@ -39,7 +44,7 @@ public class Task {
         return this.description;
     }
 
-    public void addDate(LocalDate x) {
-        this.date = x;
+    public LocalDate getDate() {
+        return this.date;
     }
 }

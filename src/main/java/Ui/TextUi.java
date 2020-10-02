@@ -4,6 +4,9 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.Scanner;
 
+/**
+ * The Text UI of Duke
+ */
 public class TextUi {
 
     private final Scanner in;
